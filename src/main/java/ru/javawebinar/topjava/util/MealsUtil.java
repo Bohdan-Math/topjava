@@ -7,13 +7,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Stream;
 
 import static java.time.LocalTime.of;
 import static java.util.Arrays.asList;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
 import static ru.javawebinar.topjava.util.TimeUtil.isBetween;
 
@@ -30,12 +30,23 @@ public class MealsUtil {
         );
         final List<MealTo> filteredWithExcess = getFilteredWithExcess(meals, of(7, 0), of(12, 0), 2000);
         final List<MealTo> filteredWithExcessByCycle = getFilteredWithExcessByCycle(meals, of(7, 0), of(12, 0), 2000);
+        final List<MealTo> filteredWithExcessInOnePass1 = getFilteredWithExcessInOnePass1(meals, of(7, 0), of(12, 0), 2000);
+        final List<MealTo> filteredWithExcessInOnePass2 = getFilteredWithExcessInOnePass2(meals, of(7, 0), of(12, 0), 2000);
 
         assert filteredWithExcess.equals(filteredWithExcessByCycle);
+        assert filteredWithExcessByCycle.equals(filteredWithExcessInOnePass1);
+        assert filteredWithExcessInOnePass1.equals(filteredWithExcessInOnePass2);
+        assert filteredWithExcessInOnePass2.equals(filteredWithExcess);
+        assert filteredWithExcess.equals(filteredWithExcessInOnePass1);
+        assert filteredWithExcessByCycle.equals(filteredWithExcessInOnePass2);
 
         filteredWithExcess
                 .forEach(System.out::println);
         filteredWithExcessByCycle
+                .forEach(System.out::println);
+        filteredWithExcessInOnePass1
+                .forEach(System.out::println);
+        filteredWithExcessInOnePass2
                 .forEach(System.out::println);
     }
 
