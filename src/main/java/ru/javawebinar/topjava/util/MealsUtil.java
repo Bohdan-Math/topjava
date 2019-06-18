@@ -7,7 +7,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ import static java.util.stream.Collectors.*;
 import static ru.javawebinar.topjava.util.TimeUtil.isBetween;
 
 public class MealsUtil {
+
     public static void main(String[] args) {
         List<Meal> meals = asList(
                 new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500),
@@ -26,7 +28,14 @@ public class MealsUtil {
                 new Meal(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500),
                 new Meal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510)
         );
-        getFilteredWithExcess(meals, of(7, 0), of(12, 0), 2000)
+        final List<MealTo> filteredWithExcess = getFilteredWithExcess(meals, of(7, 0), of(12, 0), 2000);
+        final List<MealTo> filteredWithExcessByCycle = getFilteredWithExcessByCycle(meals, of(7, 0), of(12, 0), 2000);
+
+        assert filteredWithExcess.equals(filteredWithExcessByCycle);
+
+        filteredWithExcess
+                .forEach(System.out::println);
+        filteredWithExcessByCycle
                 .forEach(System.out::println);
     }
 
