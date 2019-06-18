@@ -67,6 +67,51 @@ public class MealsUtil {
         return mealsWithExcess;
     }
 
+    public static List<MealTo> getFilteredWithExcessInOnePass1(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+        Collection<List<Meal>> list = meals.stream()
+                .collect(groupingBy(Meal::getDate)).values();
+
+        return list.stream().flatMap(dayMeals -> {
+            boolean excess = dayMeals.stream().mapToInt(Meal::getCalories).sum() > caloriesPerDay;
+            return dayMeals.stream().filter(meal ->
+                    TimeUtil.isBetween(meal.getTime(), startTime, endTime))
+                    .map(meal -> createWithExcess(meal, excess));
+        }).collect(toList());
+    }
+
+    public static List<MealTo> getFilteredWithExcessInOnePass2(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+        final class Aggregate {
+            private final List<Meal> dailyMeals = new ArrayList<>();
+            private int dailySumOfCalories;
+
+            private void accumulate(Meal meal) {
+                dailySumOfCalories += meal.getCalories();
+                if (TimeUtil.isBetween(meal.getDateTime().toLocalTime(), startTime, endTime)) {
+                    dailyMeals.add(meal);
+                }
+            }
+
+            // never invoked if the upstream is sequential
+            private Aggregate combine(Aggregate that) {
+                this.dailySumOfCalories += that.dailySumOfCalories;
+                this.dailyMeals.addAll(that.dailyMeals);
+                return this;
+            }
+
+            private Stream<MealTo> finisher() {
+                final boolean excess = dailySumOfCalories > caloriesPerDay;
+                return dailyMeals.stream().map(meal -> createWithExcess(meal, excess));
+            }
+        }
+
+        Collection<Stream<MealTo>> values = meals.stream()
+                .collect(groupingBy(Meal::getDate,
+                        Collector.of(Aggregate::new, Aggregate::accumulate, Aggregate::combine, Aggregate::finisher))
+                ).values();
+
+        return values.stream().flatMap(identity()).collect(toList());
+    }
+
     private static MealTo createWithExcess(Meal meal, boolean excess) {
         return new MealTo(meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
     }
