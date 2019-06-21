@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ru.javawebinar</groupId>
+    <groupId>javawebinar</groupId>
     <artifactId>topjava</artifactId>
     <packaging>war</packaging>
 
@@ -19,7 +19,7 @@
 
     <build>
         <finalName>topjava</finalName>
-        <defaultGoal>install</defaultGoal>
+        <defaultGoal>package</defaultGoal>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
