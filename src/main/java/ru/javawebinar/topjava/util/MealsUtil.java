@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 import static java.time.LocalTime.of;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
-import static ru.javawebinar.topjava.util.DateTimeUtil.isBetween;
+import static ru.javawebinar.topjava.util.Util.isBetween;
 
 public class MealsUtil {
 
