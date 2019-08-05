@@ -55,6 +55,9 @@ public class MealsUtil {
                 .forEach(System.out::println);
     }
 
+    private MealsUtil() {
+    }
+
     public static List<MealTo> getWithExcess(Collection<Meal> meals, int caloriesPerDay) {
         return getFilteredWithExcess(meals, caloriesPerDay, meal -> true);
     }
