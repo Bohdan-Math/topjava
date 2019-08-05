@@ -11,7 +11,7 @@ cache:
 # https://docs.travis-ci.com/user/database-setup/#PostgreSQL
 before_script:
 - psql -c 'create database topjava_db;' -U postgres
-- psql -c 'create user topjava_admin with password 'topjava_password';' -U postgres
+- psql -c 'create user topjava_admin with password \'topjava_password\';' -U postgres
 - psql -c 'grant all privileges on database topjava_db to topjava_admin;' -U postgres
 
 # https://docs.travis-ci.com/user/customizing-the-build#Building-Specific-Branches
